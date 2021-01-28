@@ -1,7 +1,9 @@
-// (C)2021, DIGI-P, NERD.JP, applying the BSD Lite License to the below source code.
-// for Unity 2018.4.20f
-// This is the unity shader applying a FishEye Circle Image to a Sphere 3D object, Roughly, 
-// and porting the Photoshop version to Unity shader.
+// Photoshop Plug-in for converting a fishyey image 
+// to square for 3dcg texture, made by 
+// Hirofumi Inomata, (C) 2003
+// I disclose AS-IS, only a main part, "do.c", for the plug-in,
+// with BSD License. And it had included some flugments 
+// with cut & try, also. Enjoy It!
 //
 Shader "Unlit/SphericalShader"
 {
@@ -55,32 +57,38 @@ Shader "Unlit/SphericalShader"
 
             fixed4 frag (v2f i) : SV_Target
             {
-				float2 MyUV;
+		float2 MyUV;
 
-				float du = (0.5f - i.uv[0]) * 3.14129f;
-				float dv = (i.uv[1] - 0.5f) * 3.14129f;
+		fixed4 col ;
 
-				float cb = cos( dv) * cos( du );
-				float sb = sqrt(1.0f - (cb * cb));
-
-				float b = acos( cb ) * (2.0f / 3.14129f);
-
-				float dx;
-				float dy;
-
-				if ( (sb >= 0.0f) && (sb <= (1.0f / 100.0f)) ) {
-					dx = cos( dv ) * sin( du );
-					dy = sin( dv );
-				} else {
-					dx = (b * cos( dv ) * sin( du ) / sb );
-					dy = (b * sin( dv ) / sb );
-				}
+		if ( abs( 2.0f * (0.5f - i.uv[0] )) <= 1.0f ) {
 				
-				MyUV[0] = dx/2.0f + 0.5f;
-				MyUV[1] = dy/2.0f + 0.5f;
+			float du = 2.0f * (0.5f - i.uv[0] ) * 3.14129f;
+			float dv = (i.uv[1] - 0.5f ) * 3.14129f;
+			float cb = cos( dv) * cos( du );
+			float sb = sqrt(1.0f - (cb * cb));
 
-				fixed4 col = tex2D(_MainTex, MyUV);
+			float b = acos( cb ) * (2.0f / 3.14129f);
 
+			float dx;
+			float dy;
+
+			if ( (sb >= 0.0f) && (sb <= (1.0f / 100.0f)) ) {
+				dx = cos( dv ) * sin( du );
+				dy = sin( dv );
+			} else {
+				dx = (b * cos( dv ) * sin( du ) / sb );
+				dy = (b * sin( dv ) / sb );
+			}
+				
+			MyUV[0] = dx/2.0f + 0.5f;
+			MyUV[1] = dy/2.0f + 0.5f;
+
+			col = tex2D(_MainTex, MyUV);
+		} else {
+			col[0] = col[1] = col[1] = col[3] = 0.0f;
+		}
+		
                 // apply fog
                 UNITY_APPLY_FOG(i.fogCoord, col);
                 return col;
