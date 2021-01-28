@@ -57,7 +57,7 @@ Shader "Unlit/SphericalShader"
             {
 				float2 MyUV;
 
-				float du = (i.uv[0] - 0.5f) * 3.14129f;
+				float du = (0.5f - i.uv[0]) * 3.14129f;
 				float dv = (i.uv[1] - 0.5f) * 3.14129f;
 
 				float cb = cos( dv) * cos( du );
