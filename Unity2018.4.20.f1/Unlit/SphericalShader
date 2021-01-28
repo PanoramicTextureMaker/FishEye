@@ -61,9 +61,9 @@ Shader "Unlit/SphericalShader"
 
 		fixed4 col ;
 
-		if ( abs( 2.0f * (0.5f - i.uv[0] )) <= 1.0f ) {
+		if ( abs( 2.0f * (i.uv[0] - 0.5f  )) <= 0.5f ) {
 				
-			float du = 2.0f * (0.5f - i.uv[0] ) * 3.14129f;
+			float du = 2.0f * (i.uv[0] - 0.5f  ) * 3.14129f;
 			float dv = (i.uv[1] - 0.5f ) * 3.14129f;
 			float cb = cos( dv) * cos( du );
 			float sb = sqrt(1.0f - (cb * cb));
